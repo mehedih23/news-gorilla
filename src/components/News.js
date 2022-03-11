@@ -63,20 +63,27 @@ export class News extends Component {
             loading: false,
         }
     }
+
+    async componentDidMount() {
+        let url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=05a3facf7e3f478f84429f59361b8a81";
+        let data = await fetch(url);
+        let parseData = await data.json();
+        this.setState({
+            articles: parseData.articles,
+        })
+    }
+
     render() {
         return (
             <div className='container my-3'>
-                <h2>News Gorilla - Top Headlines</h2>
-                <div className='row'>
-                    <div className='col-md-4'>
-                        <NewsItem title={'MY TITLE'} description={'MY description'} imageUrl={"https://cdn.24.co.za/files/Cms/General/d/1025/bf9db162f8794d928bbc6f31be969c93.jpg"} newsUrl="TODO" />
-                    </div>
-                    <div className='col-md-4'>
-                        <NewsItem title={'MY TITLE'} description={'MY description'} />
-                    </div>
-                    <div className='col-md-4'>
-                        <NewsItem title={'MY TITLE'} description={'MY description'} />
-                    </div>
+                <h3>News Gorilla - Top Headlines</h3>
+
+                <div className='row' >
+                    {this.state.articles.map((element) => {
+                        return <div className='col-md-4' key={element.url}>
+                            <NewsItem title={element.title.length > 35 ? element.title.slice(0, 35) : element.title} description={element.description.length > 80 ? element.description.slice(0, 80) : element.description} imageUrl={element.urlToImage} newsUrl={element.url} />
+                        </div>
+                    })}
                 </div>
             </div>
         )
